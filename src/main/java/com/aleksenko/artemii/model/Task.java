@@ -2,6 +2,7 @@ package com.aleksenko.artemii.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task implements Cloneable, Serializable {
@@ -84,7 +85,7 @@ public class Task implements Cloneable, Serializable {
             if (var.compareTo(current) > 0) {
                 return var;
             }
-            var = var.plusSeconds(interval);
+            var = var.plusHours(interval);
         }
         return null;
     }
@@ -151,6 +152,14 @@ public class Task implements Cloneable, Serializable {
         return Objects.hash(getTitle(), time, start, end, interval, isActive, repeated);
     }
 
+    public String printInfo() {
+        DateTimeFormatter dTF = DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm");
+        if (isRepeated()) {
+            return "Title '" + getTitle() + "' Start = " + getTime().format(dTF) + " End = " + getEnd().format(dTF) + " Interval = " + getInterval();
+        }
+        return  "Title '" + getTitle() + "' Time = " + getTime().format(dTF);
+
+    }
 
     @Override
     public String toString() {

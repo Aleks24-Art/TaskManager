@@ -42,7 +42,9 @@ public class TaskIO {
             e.printStackTrace();
         }
         try {
-            ous.close();
+            if (ous != null) {
+                ous.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +58,9 @@ public class TaskIO {
             e.printStackTrace();
         }
         try {
-            ois.close();
+            if (ois != null) {
+                ois.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,20 +94,25 @@ public class TaskIO {
         }
     }
 
-    public static void writeText(AbstractTaskList tasks, File file) {
+    public static void writeText(AbstractTaskList tasks, File file) throws IOException {
         Gson gson = new Gson();
         ArrayTaskList taskList = (ArrayTaskList) tasks;
         FileWriter writer = null;
         try {
             writer = new FileWriter(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             writer.write(gson.toJson(taskList, ArrayTaskList.class));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e1){
+            e1.getStackTrace();
+        } finally {
+            if (writer != null) {
+                writer.flush();
+                writer.close();
+            }
         }
+
+
+
+
     }
 
     public static void readText(AbstractTaskList tasks, File file) throws FileNotFoundException {
