@@ -7,8 +7,4 @@ interface View {
     void printMenu();
     void printSubMenu_1();
     void printSubMenu_2(Task task);
-    void printSubMenu_3();
-    void printSubMenu_4();
-    void printSubMenu_5();
-    void printSubMenu_6();
 }

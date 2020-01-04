@@ -9,6 +9,4 @@ public interface Controller {
     void removeTask();
     void removeAllTasks();
     void finishWork();
-    void reminder();
-    void saveAllInfoToFileSystem();
 }

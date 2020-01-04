@@ -22,7 +22,7 @@ public class Task implements Cloneable, Serializable {
         this.setTime(time);
         this.title = title;
         repeated = false;
-        isActive = false;
+        isActive = true;
     }
 
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval) throws IllegalArgumentException {
@@ -34,7 +34,7 @@ public class Task implements Cloneable, Serializable {
         this.end = end;
         this.interval = interval;
         repeated = true;
-        isActive = false;
+        isActive = true;
     }
 
     public String getTitle() {
@@ -153,12 +153,17 @@ public class Task implements Cloneable, Serializable {
     }
 
     public String printInfo() {
+
         DateTimeFormatter dTF = DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm");
         if (isRepeated()) {
-            return "Title '" + getTitle() + "' Start = " + getTime().format(dTF) + " End = " + getEnd().format(dTF) + " Interval = " + getInterval();
+            return "Название задачи: '" + getTitle() + "'     Начало выполнения: " + getTime().format(dTF) + "     Конец выполнения: " + getEnd().format(dTF) + "     Интервал повторения(в часах): " + getInterval() + "     Активность: " + activeToString(isActive);
         }
-        return  "Title '" + getTitle() + "' Time = " + getTime().format(dTF);
+        return  "Название задачи: '" + getTitle() + "'     Время выполнения: " + getTime().format(dTF) + "     Активность: " + activeToString(isActive);
 
+    }
+
+    private String activeToString(boolean active){
+        return !active ? "Нет" : "Да";
     }
 
     @Override

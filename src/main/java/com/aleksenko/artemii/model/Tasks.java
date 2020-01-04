@@ -15,7 +15,8 @@ public class Tasks {
                 .collect(Collectors.toList());
     }
 
-    public static SortedMap<LocalDateTime, Set<Task>> calendar(Iterable<Task> tasks, LocalDateTime start, LocalDateTime end) {
+    public static SortedMap<LocalDateTime, Set<Task>> calendar
+            (Iterable<Task> tasks, LocalDateTime start, LocalDateTime end) {
         SortedMap<LocalDateTime, Set<Task>> calendar = new TreeMap<>();
         for (Task task : tasks) {
             LocalDateTime key = start;
@@ -37,6 +38,7 @@ public class Tasks {
     }
 
     private static boolean inSchedule(LocalDateTime key, LocalDateTime end) {
+        if (key == null) return false;
         return key.compareTo(end) <= 0;
     }
 
