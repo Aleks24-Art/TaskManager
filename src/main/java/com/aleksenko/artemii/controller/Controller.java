@@ -1,7 +1,9 @@
 package com.aleksenko.artemii.controller;
 
+import java.io.FileNotFoundException;
+
 public interface Controller {
-    void startWork();
+    void startWork() throws FileNotFoundException;
     void addTask();
     void changeTask();
     void showTask();

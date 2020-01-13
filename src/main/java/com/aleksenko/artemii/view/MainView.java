@@ -1,8 +1,16 @@
 package com.aleksenko.artemii.view;
 
+import com.aleksenko.artemii.controller.MainController;
+import com.aleksenko.artemii.model.AbstractTaskList;
 import com.aleksenko.artemii.model.Task;
 
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import org.apache.log4j.Logger;
 public class MainView  implements View {
+    private final Logger logger = Logger.getLogger(MainView.class);
 
     @Override
     public void printTitle() {
@@ -26,9 +34,222 @@ public class MainView  implements View {
     }
 
     @Override
-    public void printSubMenu_1() {
+    public String getMenuVariant(){
+        String menuVariant;
+        menuVariant = new Scanner(System.in).nextLine();
+            while (!(menuVariant.matches("^[1-7]$"))) {
+                System.out.println("Некоректный ввод номера! \n" +
+                        "Повторите ввод с доступными пунктами меню (1-7)");
+                menuVariant = new Scanner(System.in).nextLine();
+            }
+            return menuVariant;
+    }
+
+    @Override
+    public String getSubMenuVariant_1() {
+        String variantOfTask;
+
         System.out.println("1. Добавить задачу с повторением");
         System.out.println("2. Добавить задачу без повторения");
+
+        variantOfTask = new Scanner(System.in).nextLine();
+        while (!(variantOfTask.matches("^[1-2]$"))) {
+            System.out.println("Некоректный ввод номера! \n" +
+                    "Повторите ввод с доступными пунктами меню (1-2)");
+            variantOfTask = new Scanner(System.in).nextLine();
+        }
+        return variantOfTask;
+    }
+
+    @Override
+    public void printAddStatus(Task task) {
+        System.out.println("Задача " + task.getTitle() + " успешно добавлена");
+    }
+
+    @Override
+    public void printRemoveStatus(Task task) {
+        System.out.println("Задача " + task.getTitle() + " успешно удалена");
+    }
+
+    @Override
+    public void printRemoveAllStatus() {
+        System.out.println("Все задачи были удалены");
+    }
+
+    @Override
+    public void printChangeStatus(Task task) {
+        System.out.println("Задача " + task.getTitle() + " успешно изменена");
+    }
+
+    @Override
+    public LocalDateTime getTaskDate() {
+            int thisYear = LocalDateTime.now().getYear();
+            boolean flagForCheck = true;
+            int year = 1, month = 1, day = 1, hour = 1, minute = 1;
+            LocalDateTime taskDate = LocalDateTime.of(year, month, day, hour, minute);
+
+            while (flagForCheck) {
+                flagForCheck = false;
+                try {
+                    System.out.println("Введите год: ");
+                    year = new Scanner(System.in).nextInt();
+                } catch (InputMismatchException e1) {
+                    logger.error("Пользыватель ввёл некоректные данные " + e1);
+                    flagForCheck = true;
+                    System.out.println("Некорктный ввод!");
+                }
+                if (year < thisYear || year > 2100) {
+                    logger.warn("Пользыватель ввёл некоректный год - " + year);
+                    flagForCheck = true;
+                    System.out.println("Повторите ввод с доступным диапазоном времени (" + thisYear + " - 2100)");
+                }
+            }
+
+
+            flagForCheck = true;
+            while (flagForCheck) {
+                flagForCheck = false;
+                try {
+                    System.out.println("Введтие номер месяца: ");
+                    month = new Scanner(System.in).nextInt();
+                    taskDate = LocalDateTime.of(year, month, day, hour, minute);
+                } catch (DateTimeException e1) {
+                    logger.error("Пользыватель ввёл некоректную дату " + e1);
+                    flagForCheck = true;
+                    System.out.println("Повторите ввод с доступным диапазоном месяцев (1 - 12)");
+                } catch (InputMismatchException e2) {
+                    logger.error("Пользыватель ввёл некоректные данные " + e2);
+                    flagForCheck = true;
+                    System.out.println("Некорктный ввод!");
+                }
+            }
+
+            flagForCheck = true;
+            while (flagForCheck) {
+                flagForCheck = false;
+                try {
+                    System.out.println("Введтие номер дня месяца: ");
+                    day = new Scanner(System.in).nextInt();
+                    taskDate = LocalDateTime.of(year, month, day, hour, minute);
+                } catch (DateTimeException e1) {
+                    logger.error("Пользыватель ввёл некоректную дату " + e1);
+                    flagForCheck = true;
+                    System.out.println("Недопустимое количество дней в введёном месяце");
+                } catch (InputMismatchException e2) {
+                    logger.error("Пользыватель ввёл некоректные данные " + e2);
+                    flagForCheck = true;
+                    System.out.println("Некорктный ввод!");
+                }
+            }
+
+            flagForCheck = true;
+            while (flagForCheck) {
+                flagForCheck = false;
+                try {
+                    System.out.println("Введтие час в сутках: ");
+                    hour = new Scanner(System.in).nextInt();
+                    taskDate = LocalDateTime.of(year, month, day, hour, minute);
+                } catch (DateTimeException e1) {
+                    logger.error("Пользыватель ввёл некоректную дату " + e1);
+                    flagForCheck = true;
+                    System.out.println("Недопустимый час в сутках!");
+                } catch (InputMismatchException e2) {
+                    logger.error("Пользыватель ввёл некоректные данные " + e2);
+                    flagForCheck = true;
+                    System.out.println("Некорктный ввод!");
+                }
+            }
+
+            flagForCheck = true;
+            while (flagForCheck) {
+                flagForCheck = false;
+                try {
+                    System.out.println("Введтие минуты в часе: ");
+                    minute = new Scanner(System.in).nextInt();
+                    taskDate = LocalDateTime.of(year, month, day, hour, minute);
+                } catch (DateTimeException e1) {
+                    logger.error("Пользыватель ввёл некоректную дату " + e1);
+                    flagForCheck = true;
+                    System.out.println("Недопустимые минуты в часе!");
+                } catch (InputMismatchException e2) {
+                    logger.error("Пользыватель ввёл некоректные данные " + e2);
+                    ;
+                    flagForCheck = true;
+                    System.out.println("Некорктный ввод!");
+                }
+            }
+
+        return taskDate;
+    }
+
+    @Override
+    public String getTaskTitle(){
+        String title;
+        System.out.println("Введите название задачи " +
+                "\nПример: Убрать в шкафу" +
+                "\nВвод:");
+        return title = new Scanner(System.in).nextLine();
+    }
+
+    @Override
+    public int getSubMenuVariant() {
+        boolean flagForCheck = true;
+        int variantOfTask = 0;
+
+        while (flagForCheck) {
+            try {
+                variantOfTask = new Scanner(System.in).nextInt();
+                if (variantOfTask < 1 || variantOfTask > MainController.mainTaskList.size()) {
+                    throw new InputMismatchException();
+                } else {
+                    variantOfTask--;
+                }
+            } catch (InputMismatchException e1) {
+                logger.error("Пользыватель ввёл некоректные данные " + variantOfTask);
+                flagForCheck = true;
+                System.out.println("Недопустимый ввод \n" +
+                        "Ввод: ");
+            }
+            flagForCheck = false;
+        }
+        return variantOfTask;
+    }
+
+    @Override
+    public String variantOfChange(boolean isRepeated){
+        String variantOfChange;
+        if (isRepeated) {
+            variantOfChange = new Scanner(System.in).nextLine();
+            while (!(variantOfChange.matches("^[1-5]$"))) {
+                System.out.println("Некоректный ввод");
+                variantOfChange = new Scanner(System.in).nextLine();
+            }
+        } else {
+            variantOfChange = new Scanner(System.in).nextLine();
+            while (!(variantOfChange.matches("^[1-3]$"))) {
+                System.out.println("Некоректный ввод");
+                variantOfChange = new Scanner(System.in).nextLine();
+            }
+        }
+       return variantOfChange;
+    }
+
+    @Override
+    public int createInterval() {
+        int interval;
+        System.out.println("Введите формат повторения в миунтах\n"
+                + "Подсказка: \n"
+                + "В одном часе - 60 минут \n"
+                + "В одном дне - 1440 минут \n"
+                + "В одном дне - 10080 минут \n"
+                + "Ввод: ");
+        interval = new Scanner(System.in).nextInt();
+        while (interval < 1) {
+            System.out.println("Некорктный ввод! \n" +
+                    "Введите формат повторения: ");
+            interval = new Scanner(System.in).nextInt();
+        }
+        return interval;
     }
 
     @Override
@@ -46,5 +267,17 @@ public class MainView  implements View {
             System.out.println("2. Время выполнения");
             System.out.println("3. Активность задачи");
         }
+    }
+
+    @Override
+    public String variantOfActivation() {
+        String newActive;
+        System.out.println("1. Активация задачи.");
+        System.out.println("2. Деактивация задачи.");
+        newActive = new Scanner(System.in).nextLine();
+        while (!(newActive.matches("^[1-2]$"))) {
+            System.out.println("Некоректный ввод");
+        }
+        return newActive;
     }
 }

@@ -1,5 +1,7 @@
 package com.aleksenko.artemii.model;
 
+
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +17,8 @@ public class Task implements Cloneable, Serializable {
     private LocalDateTime start;
     private LocalDateTime end;
 
+
+
     public Task(String title, LocalDateTime time) throws IllegalArgumentException {
         if (time == null) {
             throw new IllegalArgumentException("invalid time");
@@ -27,7 +31,7 @@ public class Task implements Cloneable, Serializable {
 
     public Task(String title, LocalDateTime start, LocalDateTime end, int interval) throws IllegalArgumentException {
         if (interval < 0) {
-            throw new IllegalArgumentException("invalid interval");
+            throw new IllegalArgumentException("Invalid interval");
         }
         this.title = title;
         this.start = start;
@@ -61,10 +65,7 @@ public class Task implements Cloneable, Serializable {
     }
 
     public boolean isRepeated() {
-        if (repeated) {
-            return true;
-        }
-        return false;
+        return repeated;
     }
 
     public void setTime(LocalDateTime start, LocalDateTime end, int interval) {
@@ -85,7 +86,7 @@ public class Task implements Cloneable, Serializable {
             if (var.compareTo(current) > 0) {
                 return var;
             }
-            var = var.plusHours(interval);
+            var = var.plusMinutes(interval);
         }
         return null;
     }
@@ -156,7 +157,7 @@ public class Task implements Cloneable, Serializable {
 
         DateTimeFormatter dTF = DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm");
         if (isRepeated()) {
-            return "Название задачи: '" + getTitle() + "'     Начало выполнения: " + getTime().format(dTF) + "     Конец выполнения: " + getEnd().format(dTF) + "     Интервал повторения(в часах): " + getInterval() + "     Активность: " + activeToString(isActive);
+            return "Название задачи: '" + getTitle() + "'     Начало выполнения: " + getTime().format(dTF) + "     Конец выполнения: " + getEnd().format(dTF) + "     Интервал повторения(в минутах): " + getInterval() + "     Активность: " + activeToString(isActive);
         }
         return  "Название задачи: '" + getTitle() + "'     Время выполнения: " + getTime().format(dTF) + "     Активность: " + activeToString(isActive);
 
@@ -180,7 +181,13 @@ public class Task implements Cloneable, Serializable {
     }
 
     @Override
-    public Task clone() throws CloneNotSupportedException {
-        return (Task) super.clone();
+    public Task clone() {
+        try {
+            return (Task) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            //При попытке добавить логер в класс выбивало ошибку
+        }
+        return null;
     }
 }

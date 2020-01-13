@@ -1,14 +1,15 @@
-package com.aleksenko.artemii.app;
+package com.aleksenko.artemii.controller;
 
-import com.aleksenko.artemii.controller.MainController;
 import com.aleksenko.artemii.model.Task;
+import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.time.LocalDateTime;
 
 public class ThreadForRemind extends Thread {
+    private final Logger logger = Logger.getLogger(ThreadForRemind.class);
     private MainController controller;
-    ThreadForRemind(MainController controller) {
+    public ThreadForRemind(MainController controller) {
         this.controller = controller;
     }
 
@@ -28,7 +29,7 @@ public class ThreadForRemind extends Thread {
             try {
                 sleep(60000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("InterruptedException при попытке sleep(60000)");
             }
         }
     }
