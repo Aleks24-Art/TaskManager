@@ -3,6 +3,7 @@ package com.aleksenko.artemii.model;
 import java.io.IOException;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Logger;
 
 import java.io.ObjectOutputStream;
@@ -90,6 +91,11 @@ public class TaskIO {
         }
     }
 
+    /**
+     * Method which write task list in file in Gson format
+     * @param tasks task list
+     * @param file file where
+     */
     public static void writeText(AbstractTaskList tasks, File file) {
         Gson gson = new Gson();
         ArrayTaskList taskList = (ArrayTaskList) tasks;
@@ -97,6 +103,8 @@ public class TaskIO {
         try {
             writer = new FileWriter(file);
             writer.write(gson.toJson(taskList, ArrayTaskList.class));
+            writer.flush();
+            writer.close();
         } catch (IOException e1){
             logger.error("Ошибка при записи данных в файл в формате Gson");
         }
@@ -111,19 +119,34 @@ public class TaskIO {
         }
     }
 
+    /**
+     * Method to read task list in Gson format from file
+     * @param tasks where we should
+     * @param file where we
+     */
     public static void readText(AbstractTaskList tasks, File file) {
         Gson gson = new Gson();
         ArrayTaskList taskList;
         FileReader reader = null;
         try {
             reader = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            logger.error("Ошибка при считывании с файла в формате Gson");
+            taskList = gson.fromJson(reader, ArrayTaskList.class);
+            for (Task task : taskList) {
+                tasks.add(task);
+            }
+            try {
+                reader.close();
+            } catch (IOException e) {
+                logger.error("Ошибка при заекрытии потока FileReader");
+            }
+        } catch (FileNotFoundException e ) {
+            logger.error("Ошибка при считывании с файла в формате Gson (файл не найден или повреждён)");
+        } catch (JsonSyntaxException | IllegalStateException e1) {
+            logger.error("Ошибка при считывании с файла в формате Gson (неверный формат записи)");
+            System.out.println("Не удалось загрузить файлы");
+            System.out.println("Неверный формат записи в файле с задачами");
         }
-        assert reader != null;
-        taskList = gson.fromJson(reader, ArrayTaskList.class);
-        for (Task task : taskList) {
-            tasks.add(task);
-        }
+
+
     }
 }

@@ -4,16 +4,22 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * @version 1.0
+ * This is the model class, where we create our task list, the same as {@link java.util.ArrayList}.
+ */
 public class ArrayTaskList extends AbstractTaskList {
-
+    /**
+     * Field to display number of tasks in task list
+     */
     private int capacity = 0;
+    /**
+     * Array where we save our task in ArrayTaskList
+     */
     private Task[] tasks = new Task[1];
 
-
-    public void add(Task task) throws IllegalArgumentException {
-        if (task == null) {
-            throw new IllegalArgumentException("invalid type of task");
-        }
+    @Override
+    public void add(Task task) {
         if (capacity == tasks.length) {
             reDo(tasks.length + 1);
             tasks[capacity++] = task;
@@ -23,21 +29,7 @@ public class ArrayTaskList extends AbstractTaskList {
         }
     }
 
-    public void reDo(int newSize) {
-        Task[] newTasks = new Task[newSize];
-        System.arraycopy(tasks, 0, newTasks, 0, capacity);
-        tasks = newTasks;
-    }
-
-    public int getIndex(Task task) {
-        for (int i = 0; i < tasks.length; i++) {
-            if (tasks[i].equals(task)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
+    @Override
     public boolean remove(Task task) {
         int pos = getIndex(task);
         if (pos == -1) {
@@ -56,14 +48,13 @@ public class ArrayTaskList extends AbstractTaskList {
         return true;
     }
 
+    @Override
     public int size() {
         return capacity;
     }
 
-    public Task getTask(int index) throws IndexOutOfBoundsException {
-        if (index < 0 || index > capacity - 1) {
-            throw new IndexOutOfBoundsException("illegal index");
-        }
+    @Override
+    public Task getTask(int index) {
         return tasks[index];
     }
 
@@ -83,22 +74,6 @@ public class ArrayTaskList extends AbstractTaskList {
         return result;
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public Task[] getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Task[] tasks) {
-        this.tasks = tasks;
-    }
-
     @Override
     public String toString() {
         return "ArrayTaskList{"
@@ -114,6 +89,9 @@ public class ArrayTaskList extends AbstractTaskList {
         return new TaskIterator();
     }
 
+    /**
+     * Method to iterate task list
+     */
     public class TaskIterator implements Iterator {
         private int currentIndex = 0;
         Task taskF;
@@ -147,14 +125,47 @@ public class ArrayTaskList extends AbstractTaskList {
 
     }
 
+    /**
+     * Method convert stream to array.
+     * @return stream of array
+     */
     @Override
     public Stream<Task> getStream() {
         return Arrays.stream(tasks);
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return super.clone();
     }
 
+    /**
+     * Method to display number of tasks in task list
+     * @return number of tasks in task list
+     */
+    private int getCapacity() {
+        return capacity;
+    }
+
+    /**
+     * Method which return array with task list
+     * @return array with task
+     */
+    public Task[] getTasks() {
+        return tasks;
+    }
+
+    private void reDo(int newSize) {
+        Task[] newTasks = new Task[newSize];
+        System.arraycopy(tasks, 0, newTasks, 0, capacity);
+        tasks = newTasks;
+    }
+    private int getIndex(Task task) {
+        for (int i = 0; i < tasks.length; i++) {
+            if (tasks[i].equals(task)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

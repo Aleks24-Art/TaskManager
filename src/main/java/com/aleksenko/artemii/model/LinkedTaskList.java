@@ -4,11 +4,28 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * @version 1.0
+ * This is the model class, from where we create our task list the same as {@link java.util.LinkedList}.
+ */
 public class LinkedTaskList extends AbstractTaskList {
+    /**
+     * Field to display number of tasks in task list
+     */
     private int capacity = 0;
+    /**
+     * Field to display first node in chain
+     */
     private TaskNode first;
+    /**
+     * Field to display last node in chain
+     */
     private TaskNode last;
 
+    /**
+     * Class to make connection between tasks
+     * @param <Task> some task
+     */
     public static class TaskNode<Task> {
         private Task item;
         private TaskNode next;
@@ -41,6 +58,7 @@ public class LinkedTaskList extends AbstractTaskList {
         }
     }
 
+    @Override
     public void add(Task task) throws IllegalArgumentException {
         TaskNode newNode = new TaskNode(task);
         if (first == null) {
@@ -56,6 +74,7 @@ public class LinkedTaskList extends AbstractTaskList {
         capacity++;
     }
 
+    @Override
     public Task getTask(int index) {
         if (index < 0 || index >= capacity) {
             throw new IndexOutOfBoundsException();
@@ -68,6 +87,11 @@ public class LinkedTaskList extends AbstractTaskList {
         return (Task) nodeForSearch.item;
     }
 
+    /**
+     * Method to search node
+     * @param index of node
+     * @return node with task
+     */
     public TaskNode getTaskNode(int index) {
         if (index < 0 || index >= capacity) {
             throw new IndexOutOfBoundsException();
@@ -80,6 +104,7 @@ public class LinkedTaskList extends AbstractTaskList {
         return nodeForSearch;
     }
 
+    @Override
     public boolean remove(Task task) {
         if (task.hashCode() == first.item.hashCode()) {
             return removeFirst();
@@ -92,46 +117,7 @@ public class LinkedTaskList extends AbstractTaskList {
         return removeAnother(task);
     }
 
-    public boolean removeFirst() {
-        if (first.equals(last)) {
-            first = null;
-            last = null;
-        } else {
-            first = first.next;
-        }
-        capacity--;
-        return true;
-    }
-
-    public boolean removeLast() {
-        if (last.equals(first)) {
-            first = null;
-            last = null;
-        } else {
-            last = last.prev;
-        }
-        capacity--;
-        return true;
-    }
-
-    public boolean removeAnother(Task task) {
-        TaskNode node;
-        node = first;
-        for (int i = 0; i < capacity; i++) {
-            node = node.next;
-            if (node.item.equals(task)) {
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
-                break;
-            }
-            if (i == capacity - 1) {
-                return false;
-            }
-        }
-        capacity--;
-        return true;
-    }
-
+    @Override
     public int size() {
         return capacity;
     }
@@ -191,16 +177,14 @@ public class LinkedTaskList extends AbstractTaskList {
         this.last = last;
     }
 
-    private boolean isListsEqual(LinkedTaskList l1, LinkedTaskList l2) {
-
-        return true;
-    }
-
     @Override
     public Iterator<Task> iterator() {
         return new TaskIterator();
     }
 
+    /**
+     * We use it to iterate our collection
+     */
     public class TaskIterator implements Iterator {
         TaskNode taskNode1 = first;
         TaskNode taskNode = null;
@@ -233,7 +217,17 @@ public class LinkedTaskList extends AbstractTaskList {
 
     }
 
-    public Task[] toArray() {
+    @Override
+    public Stream<Task> getStream() {
+        return Arrays.stream(this.toArray());
+    }
+
+    @Override
+    public Object clone() {
+        return super.clone();
+    }
+
+    private Task[] toArray() {
         Task[] result = new Task[capacity];
         int i = 0;
         for (LinkedTaskList.TaskNode<Task> x = first; x != null; x = x.next) {
@@ -243,13 +237,43 @@ public class LinkedTaskList extends AbstractTaskList {
         return result;
     }
 
-    @Override
-    public Stream<Task> getStream() {
-        return Arrays.stream(this.toArray());
+    private boolean removeFirst() {
+        if (first.equals(last)) {
+            first = null;
+            last = null;
+        } else {
+            first = first.next;
+        }
+        capacity--;
+        return true;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    private boolean removeLast() {
+        if (last.equals(first)) {
+            first = null;
+            last = null;
+        } else {
+            last = last.prev;
+        }
+        capacity--;
+        return true;
+    }
+
+    private boolean removeAnother(Task task) {
+        TaskNode node;
+        node = first;
+        for (int i = 0; i < capacity; i++) {
+            node = node.next;
+            if (node.item.equals(task)) {
+                node.prev.next = node.next;
+                node.next.prev = node.prev;
+                break;
+            }
+            if (i == capacity - 1) {
+                return false;
+            }
+        }
+        capacity--;
+        return true;
     }
 }
