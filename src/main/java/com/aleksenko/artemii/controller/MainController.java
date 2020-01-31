@@ -1,5 +1,6 @@
 package com.aleksenko.artemii.controller;
 
+import com.aleksenko.artemii.enums.FileDeleteValue;
 import com.aleksenko.artemii.view.MainView;
 import com.aleksenko.artemii.model.*;
 import com.aleksenko.artemii.model.Tasks;
@@ -7,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MainController implements Controller {
@@ -26,15 +26,15 @@ public class MainController implements Controller {
     /**
      * Field to save all tasks
      */
-    private File tasks = new File("src\\main\\resources\\tasks.txt");
+    private final File tasks = new File("src\\main\\resources\\tasks.txt");
 
     /**
      * Constructor with app start method
      */
     public MainController() {
         askAboutTaskList();
-        File log = new File("src\\main\\resources\\info.log");
-        clearLogFile(log);
+        final File log = new File("src\\main\\resources\\info.log");
+        clearFile(log, FileDeleteValue.LOG);
         view.printTitle();
         startWork();
     }
@@ -75,27 +75,23 @@ public class MainController implements Controller {
     @Override
     public void addTask() {
         Task newTask;
-        boolean flagForCheck = true;
         String variantOfTask = view.getSubMenuVariant_1();
         String title;
-        LocalDateTime time, start = null, end = null;
+        LocalDateTime time, start, end;
         int interval;
         switch (variantOfTask) {
             case "0":
                 break;
             case "1":
                 title = view.getTaskTitle();
-                System.out.println("Для создания повторяющейся задачи необходимо ввести:\n" +
-                        "• Начало выполнения задачи\n" +
-                        "• Конец выполнения задачи\n" +
-                        "• Интервал повторения\n");
-                while (flagForCheck) {
+                view.printSubMenuToRepeatedTaskCreating();
+                while (true) {
                     start = addStart();
                     end = addEnd();
-                    flagForCheck = compareStartEnd(start, end);
+                    if (start.isBefore(end)) {
+                        break;
+                    }
                 }
-
-                System.out.println("Ввод интервала повторения задачи...");
                 interval = view.createInterval();
 
                 newTask = new Task(title, start, end, interval);
@@ -107,7 +103,6 @@ public class MainController implements Controller {
                 title = view.getTaskTitle();
                 time = view.getTaskDate();
                 while (time.compareTo(LocalDateTime.now()) <= 0) {
-                    System.out.println("Дата выполнения задачи не может быть в прошлом");
                     time = view.getTaskDate();
                 }
                 newTask = new Task(title, time);
@@ -122,44 +117,25 @@ public class MainController implements Controller {
     public void changeTask() {
         Task taskToChange;
         int menuVariant;
-        int i = 1;
-        System.out.println("Список доступных для изменения задач: \n");
-        if (mainTaskList.size() == 0) {
-            System.out.println("Ваш список задач пуст! \n"
-                    + "Добавте задачи для их редактирования.");
+        view.printTaskList(mainTaskList);
+        menuVariant = view.getNumberVariantOfTask();
+        if (menuVariant == 0) {
+            startWork();
         } else {
-            for (Task task : mainTaskList) {
-                System.out.println(i + ". " + task.getTitle());
-                i++;
-            }
-           System.out.println("Выберете номер задачи которую хотите изменить");
-           System.out.println("Введите '0' для выхода в меню");
-           menuVariant = view.getNumberVariantOfTask();
-           if (menuVariant == 0) {
-                startWork();
-           } else {
-               menuVariant--;
-               taskToChange = mainTaskList.getTask(menuVariant);
-               view.printSubMenu_2(taskToChange);
-               changes(taskToChange);
-               logger.info("Задача" + taskToChange + " была изменена");
-               view.printChangeStatus(taskToChange);
-           }
-
+            menuVariant--;
+            taskToChange = mainTaskList.getTask(menuVariant);
+            view.printSubMenu_2(taskToChange);
+            changes(taskToChange);
+            logger.info("Задача" + taskToChange.getTitle() + " была изменена");
+            view.printChangeStatus(taskToChange);
         }
+
     }
 
     @Override
     public void showTask() {
-        if (mainTaskList.size() == 0) {
-            System.out.println("Список задач пуст");
-        } else {
-            for (Task task : mainTaskList) {
-                System.out.println(task.printInfo());
-                logger.debug("Пользователь вызвал весь список задач");
-            }
-        }
-
+        view.printTaskList(mainTaskList);
+        logger.debug("Пользователь вызвал весь список задач. Количество выведеных задач = " + mainTaskList.size());
     }
 
     @Override
@@ -183,26 +159,14 @@ public class MainController implements Controller {
     public void removeTask() {
         Task taskForDelete;
         int menuVariant;
-        if (mainTaskList.size() == 0) {
-            System.out.println("Список задач пуст!");
+        view.printTaskList(mainTaskList);
+        menuVariant = view.getNumberVariantOfTask();
+        if (menuVariant == 0) {
+            startWork();
         } else {
-            int i = 1;
-            System.out.println("Список доступных для удаление задач: ");
-
-            for (Task task : mainTaskList) {
-                System.out.println(i + ". " + task.printInfo());
-                i++;
-            }
-            System.out.println("Выберете номер задачи которую хотите удалить");
-            System.out.println("Введите '0' для выхода в меню");
-            menuVariant = view.getNumberVariantOfTask();
-            if (menuVariant == 0) {
-                startWork();
-            } else {
-                menuVariant--;
-                taskForDelete = mainTaskList.getTask(menuVariant);
-                view.printRemoveStatus(taskForDelete, mainTaskList.remove(taskForDelete));
-            }
+            menuVariant--;
+            taskForDelete = mainTaskList.getTask(menuVariant);
+            view.printRemoveStatus(taskForDelete, mainTaskList.remove(taskForDelete));
         }
     }
 
@@ -220,9 +184,8 @@ public class MainController implements Controller {
     @Override
     public void finishWork() {
         TaskIO.writeText(mainTaskList, tasks);
-        System.out.println("Удачного Вам дня!");
+        view.closeBufferedReader();
         logger.info("Завершение программы");
-        new Scanner(System.in).nextLine();
         System.exit(0);
     }
 
@@ -230,19 +193,7 @@ public class MainController implements Controller {
     public void changeRepeated() {
         int variantOfTask;
         Task taskForChange;
-        System.out.println("Выберите задачу в которой хотите изменить формат повторения");
-        System.out.println("Введите '0' для выхода в меню");
-        int i = 1;
-        if (mainTaskList.size() == 0) {
-            System.out.println("Ваш список задач пуст! \n"
-                    + "Добавте задачи для их редактирования.");
-        } else {
-            for (Task task : mainTaskList) {
-                System.out.println(i + ". " + task.getTitle());
-                i++;
-            }
-
-        }
+        view.printTaskList(mainTaskList);
         variantOfTask = view.getNumberVariantOfTask();
         if (variantOfTask != 0) {
             variantOfTask--;
@@ -262,131 +213,128 @@ public class MainController implements Controller {
                 TaskIO.readText(mainTaskList, tasks);
                 break;
             case "2":
-                clearTasksFile(tasks);
+                clearFile(tasks, FileDeleteValue.TASK);
                 break;
             case "3":
-                System.out.println("Для добавления своего списка задач необходимо соблюсти несколько обязательных пунктов: ");
-                System.out.println("1. Ваш файл должен иметь название tasks.txt");
-                System.out.println("2. Ваш файл должен находится по данному пути ...\\TaskManager\\target\\src\\main\\resources");
-                System.out.println("3. Ваш файл должен соответствовать формату записи Json");
-                System.out.println("4. Ваш файл должен содержать все необходимые поля задач");
-                System.out.println("При невыполнии хотя бы одного пункта Вы начнете работу с пустым списком задач");
-                System.out.println("Если по данному пути уже находится подобный файл,\n" +
-                        "просто перезапишите его на необхоюимый Вам файл");
-                System.out.println("Перезапустити программу (Enter) полсе выполнения всех действий и нажмите '1' ");
-                new Scanner(System.in).nextLine();
+                view.printSubMenuToAddingUserFile();
+                try {
+                    view.getReader().readLine();
+                } catch (IOException e) {
+                    logger.error("Ошибка при потке задержать консоль" + e);
+                }
                 System.exit(0);
                 break;
         }
     }
+
     private void showTaskListForUserInterval() {
         LocalDateTime startOfCalendar, endOfCalendar;
-        System.out.println("Что бы посмотреть календарь задач необходим определённый отрезок времени");
-        System.out.println("Ввод начала отрезка времени...");
         startOfCalendar = view.getTaskDate();
-        System.out.println("Ввод конца отрезка времени...");
         endOfCalendar = view.getTaskDate();
-        DateTimeFormatter dTF = DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm");
         SortedMap<LocalDateTime, Set<Task>> calendar = Tasks.calendar(mainTaskList, startOfCalendar, endOfCalendar);
+        view.printCalendar(calendar);
+    }
 
-        for (Map.Entry<LocalDateTime, Set<Task>> map : calendar.entrySet()) {
-            for (Task task : map.getValue()) {
-                LocalDateTime key = map.getKey();
-                System.out.println(key.format(dTF) + " " + task.printInfo() + "\n");
-            }
-        }
-    }
     private void showTaskListForWeekInterval() {
-        DateTimeFormatter dTF = DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm");
         SortedMap<LocalDateTime, Set<Task>> calendar = Tasks.calendar(mainTaskList, LocalDateTime.now(), LocalDateTime.now().plusWeeks(1));
-        for (Map.Entry<LocalDateTime, Set<Task>> map : calendar.entrySet()) {
-            for (Task task : map.getValue()) {
-                LocalDateTime key = map.getKey();
-                System.out.println(key.format(dTF) + " " + task.printInfo() + "\n");
-            }
-        }
+        view.printCalendar(calendar);
     }
+
     private LocalDateTime addStart() {
         LocalDateTime start;
-        System.out.println("Ввод начала выполнения задачи...");
         start = view.getTaskDate();
-        while (start.compareTo(LocalDateTime.now()) <= 0) {
-            System.out.println("Дата выполнения задачи не может быть в прошлом");
-            start = view.getTaskDate();
-        }
         return start;
     }
+
     private LocalDateTime addEnd() {
         LocalDateTime end;
-        System.out.println("Ввод конца выполнения задачи...");
         end = view.getTaskDate();
         while (end.compareTo(LocalDateTime.now()) <= 0) {
-            System.out.println("Дата выполнения задачи не может быть в прошлом");
             end = view.getTaskDate();
         }
         return end;
     }
-    private boolean compareStartEnd(LocalDateTime start, LocalDateTime end) {
-        boolean flagForCheck;
-        if (start.isBefore(end)) {
-            flagForCheck = false;
-        } else {
-            flagForCheck = true;
-            System.out.println("Начало задачи не может быть после или во время её окончания");
-        }
-        return flagForCheck;
-    }
+
     private void toRepeated(Task task) {
-            task.setTime(null);
-            task.setRepeated(true);
-            task.setStart(addStart());
-            task.setEnd(addEnd());
-            task.setInterval(view.createInterval());
+        LocalDateTime start, end;
+        task.setTime(null);
+        task.setRepeated(true);
+        start = addStart();
+        end = addEnd();
+        while (start.isAfter(end)) {
+            start = addStart();
+            end = addEnd();
+        }
+        task.setStart(start);
+        task.setEnd(end);
+        task.setInterval(view.createInterval());
     }
+
     private void toUnRepeated(Task task) {
-            task.setRepeated(false);
-            task.setStart(null);
-            task.setEnd(null);
-            task.setInterval(0);
-            task.setTime(view.getTaskDate());
+        task.setRepeated(false);
+        task.setStart(null);
+        task.setEnd(null);
+        task.setInterval(0);
+        task.setTime(view.getTaskDate());
     }
+
     private void changes(Task task) {
         if (task.isRepeated()) {
+            LocalDateTime newStart = null, newEnd = null;
             switch (view.variantOfChange(true)) {
                 case "1":
-                    System.out.println("Введите новое название задачи: ");
-                    task.setTitle(view.getTaskTitle());
-                    logger.debug("Поле Title было изменено");
+                    String newTitle;
+                    newTitle = view.getTaskTitle();
+                    logger.debug("Поле Title для задачи " + task.getTitle()+ " было изменено на " + newTitle);
+                    task.setTitle(newTitle);
                     break;
                 case "2":
-                    System.out.println("Введите новое время старта выполнения задачи: ");
-                    task.setStart(view.getTaskDate());
-                    logger.debug("Поле Start было изменено");
+                    while (true) {
+                        newStart = view.getTaskDate();
+                        if (newStart.isBefore(task.getEnd())) {
+                            break;
+                        } else {
+                            view.compareStartEnd(newStart, task.getEnd());
+                        }
+                    }
+                    task.setStart(newStart);
+                    logger.debug("Поле Start для задачи " + task.getTitle() + " было изменено на " + newStart);
                     break;
                 case "3":
-                    System.out.println("Введите новое время конца выполнения задачи: ");
-                    task.setEnd(view.getTaskDate());
-                    logger.debug("Поле End было изменено");
+                    while (true) {
+                        newEnd = view.getTaskDate();
+                        if (task.getStart().isBefore(newEnd)) {
+                            break;
+                        } else {
+                            view.compareStartEnd(task.getStart(), newEnd);
+                        }
+                    }
+                    task.setEnd(newEnd);
+                    logger.debug("Поле End для задачи " + task.getTitle() + " было изменено на " + newEnd);
                     break;
                 case "4":
-                    System.out.println("Введите новый интервал выполненя задачи: ");
-                    task.setInterval(view.createInterval());
-                    logger.debug("Поле Interval было изменено");
+                    int newInterval;
+                    newInterval = view.createInterval();
+                    task.setInterval(newInterval);
+                    logger.debug("Поле Interval для задачи " + task.getTitle() + " было изменено на " + newInterval);
                     break;
                 case "5":
                     changeActive(view.variantOfActivation(), task);
+                    break;
             }
         } else {
             switch (view.variantOfChange(false)) {
                 case "1":
-                    System.out.println("Введите новое название задачи: ");
-                    task.setTitle(view.getTaskTitle());
-                    logger.debug("Поле Title было изменено");
+                    String newTitle;
+                    newTitle = view.getTaskTitle();
+                    logger.debug("Поле Title для задачи " + task.getTitle() + " было изменено на " + newTitle);
+                    task.setTitle(newTitle);
                     break;
                 case "2":
-                    System.out.println("Введите новое время выполнения задачи: ");
-                    task.setTime(view.getTaskDate());
-                    logger.debug("Поле Time было изменено");
+                    LocalDateTime newTime;
+                    newTime = view.getTaskDate();
+                    task.setTime(newTime);
+                    logger.debug("Поле Time для задачи " + task.getTitle() + " было изменено на " + newTime);
                     break;
                 case "3":
                     changeActive(view.variantOfActivation(), task);
@@ -394,52 +342,44 @@ public class MainController implements Controller {
 
         }
     }
-    private void changeActive(String s, Task task){
+
+    private void changeActive(String s, Task task) {
         switch (s) {
             case "1":
                 task.setActive(true);
-                logger.debug("Поле Active было активировано");
+                logger.debug("Поле Active для задачи " + task.getTitle() + " было активировано");
                 break;
             case "2":
                 task.setActive(false);
-                logger.debug("Поле Active было деактивировано");
+                logger.debug("Поле Active для задачи " + task.getTitle() + " было деактивировано");
                 break;
         }
     }
-    private void clearLogFile(File file) {
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new FileWriter(file));
-            bw.write("");
-        } catch (IOException e) {
-            logger.error("Произошла ошибка при очистке файла info.log");
-        }
 
+    private void clearFile(File file, FileDeleteValue value) {
+        BufferedWriter bw = null;
+        if (value == FileDeleteValue.TASK) {
+            try {
+                bw = new BufferedWriter(new FileWriter(file));
+                bw.write("");
+            } catch (IOException e) {
+                logger.error("Произошла ошибка при очистке файла task.txt" + e);
+            }
+        } else {
+            try {
+                bw = new BufferedWriter(new FileWriter(file));
+                bw.write("{\"capacity\":0,\"tasks\":[null]}");
+            } catch (IOException e) {
+                logger.error("Произошла ошибка при очистке файла info.log" + e);
+            }
+        }
         try {
             if (bw != null) {
                 bw.flush();
                 bw.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при очистке файла info.log");
-        }
-    }
-    private void clearTasksFile(File file) {
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new FileWriter(file));
-            bw.write("{\"capacity\":0,\"tasks\":[null]}");
-        } catch (IOException e) {
-            logger.error("Произошла ошибка при очистке файла info.log");
-        }
-
-        try {
-            if (bw != null) {
-                bw.flush();
-                bw.close();
-            }
-        } catch (IOException e) {
-            logger.error("Ошибка при очистке файла tasks.txt");
+            logger.error("Ошибка при закрытии потока BufferedWriter" + e);
         }
     }
 }

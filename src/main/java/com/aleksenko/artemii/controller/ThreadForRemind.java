@@ -32,7 +32,7 @@ public class ThreadForRemind extends Thread {
             try {
                 sleep(20000);
             } catch (InterruptedException e) {
-                logger.error("InterruptedException при попытке sleep(30000)");
+                logger.error("Ошибка при попытке sleep(20000)");
             }
         }
     }

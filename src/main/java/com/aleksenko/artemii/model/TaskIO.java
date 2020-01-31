@@ -111,7 +111,6 @@ public class TaskIO {
 
         try {
             if (writer != null) {
-                writer.flush();
                 writer.close();
             }
         } catch (IOException e) {

@@ -154,9 +154,9 @@ public class Task implements Cloneable, Serializable {
 
         DateTimeFormatter dTF = DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm");
         if (isRepeated()) {
-            return "Название задачи: '" + getTitle() + "'     Начало выполнения: " + getTime().format(dTF) + "     Конец выполнения: " + getEnd().format(dTF) + "     Интервал повторения(в минутах): " + getInterval() + "     Активность: " + activeToString(isActive);
+            return "Название задачи: '" + getTitle() + "' Начало выполнения: " + getStart().format(dTF) + "  Конец выполнения: " + getEnd().format(dTF) + "  Интервал повторения(в минутах): " + getInterval() + "  Активность: " + activeToString(isActive);
         }
-        return  "Название задачи: '" + getTitle() + "'     Время выполнения: " + getTime().format(dTF) + "     Активность: " + activeToString(isActive);
+            return  "Название задачи: '" + getTitle() + "'     Время выполнения: " + getTime().format(dTF) + "     Активность: " + activeToString(isActive);
 
     }
 

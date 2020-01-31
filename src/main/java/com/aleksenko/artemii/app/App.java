@@ -15,7 +15,7 @@ public class App {
      * @param args main code
      */
     public static void main( String[] args ) {
-    new ThreadForRemind().start();
+   // new ThreadForRemind().start();
     new MainController();
     }
 }
