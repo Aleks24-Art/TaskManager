@@ -285,7 +285,7 @@ public class MainController implements Controller {
                 case "1":
                     String newTitle;
                     newTitle = view.getTaskTitle();
-                    logger.debug("Поле Title для задачи " + task.getTitle()+ " было изменено на " + newTitle);
+                    logger.debug("Поле Title для задачи " + task.getTitle() + " было изменено на " + newTitle);
                     task.setTitle(newTitle);
                     break;
                 case "2":
@@ -358,28 +358,24 @@ public class MainController implements Controller {
 
     private void clearFile(File file, FileDeleteValue value) {
         BufferedWriter bw = null;
-        if (value == FileDeleteValue.TASK) {
-            try {
-                bw = new BufferedWriter(new FileWriter(file));
-                bw.write("");
-            } catch (IOException e) {
-                logger.error("Произошла ошибка при очистке файла task.txt" + e);
-            }
-        } else {
-            try {
-                bw = new BufferedWriter(new FileWriter(file));
-                bw.write("{\"capacity\":0,\"tasks\":[null]}");
-            } catch (IOException e) {
-                logger.error("Произошла ошибка при очистке файла info.log" + e);
-            }
-        }
         try {
-            if (bw != null) {
-                bw.flush();
-                bw.close();
+            bw = new BufferedWriter(new FileWriter(file));
+            if (value == FileDeleteValue.TASK) {
+                bw.write("");
+            } else {
+                bw.write("{\"capacity\":0,\"tasks\":[null]}");
             }
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока BufferedWriter" + e);
+            logger.error("Ошибка записи в файл " + e);
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException e) {
+                logger.error("Ошибка при закрытии потока " + e);
+            }
         }
     }
 }

@@ -11,11 +11,12 @@ import java.io.*;
 
 public class TaskIO {
     private final static Logger logger = Logger.getLogger(TaskIO.class);
+
     public static void write(AbstractTaskList tasks, OutputStream out) {
         try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
             oos.writeObject(tasks);
         } catch (IOException e1) {
-            logger.error("Ошибка при записи файла в поток");
+            logger.error("Ошибка при считывании" + e1);
         }
 
     }
@@ -27,7 +28,7 @@ public class TaskIO {
                 tasks.add(task);
             }
         } catch (IOException | ClassNotFoundException e1) {
-            logger.error("Ошибка при считывания файла с потока");
+            logger.error("Ошибка при считывании " + e1);
         }
     }
 
@@ -36,14 +37,14 @@ public class TaskIO {
         try {
             ous = new ObjectOutputStream(new FileOutputStream(file));
         } catch (IOException e) {
-            logger.error("Ошибка при заиси данных в файл");
+            logger.error("Ошибка при заиси в файл" + e);
         }
         try {
             if (ous != null) {
                 ous.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии ObjectOutputStream");
+            logger.error("Ошибка при закрытии потока " + e);
         }
     }
 
@@ -52,14 +53,14 @@ public class TaskIO {
         try {
             ois = new ObjectInputStream(new FileInputStream(file));
         } catch (IOException e) {
-            logger.error("Ошибка при считывания данных с файла");
+            logger.error("Ошибка при считывании " + e);
         }
         try {
             if (ois != null) {
                 ois.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии ObjectInputStream");
+            logger.error("Ошибка при закрытии потока " + e);
         }
     }
 
@@ -69,12 +70,12 @@ public class TaskIO {
         try {
             out.write(gson.toJson(arrayTaskList, ArrayTaskList.class));
         } catch (IOException e) {
-            logger.error("Ошибка при записи в поток в формате Gson");
+            logger.error("Ошибка при записи в поток" + e);
         }
         try {
             out.close();
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока");
+            logger.error("Ошибка при закрытии потока " + e);
         }
     }
 
@@ -87,14 +88,15 @@ public class TaskIO {
         try {
             in.close();
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока");
+            logger.error("Ошибка при закрытии потока " + e);
         }
     }
 
     /**
      * Method which write task list in file in Gson format
+     *
      * @param tasks task list
-     * @param file file where
+     * @param file  file where
      */
     public static void writeText(AbstractTaskList tasks, File file) {
         Gson gson = new Gson();
@@ -105,8 +107,8 @@ public class TaskIO {
             writer.write(gson.toJson(taskList, ArrayTaskList.class));
             writer.flush();
             writer.close();
-        } catch (IOException e1){
-            logger.error("Ошибка при записи данных в файл в формате Gson");
+        } catch (IOException e1) {
+            logger.error("Ошибка при записи в файл " + e1);
         }
 
         try {
@@ -114,14 +116,15 @@ public class TaskIO {
                 writer.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при потока FileWriter");
+            logger.error("Ошибка при закрытии потока " + e);
         }
     }
 
     /**
      * Method to read task list in Gson format from file
+     *
      * @param tasks where we should
-     * @param file where we
+     * @param file  where we
      */
     public static void readText(AbstractTaskList tasks, File file) {
         Gson gson = new Gson();
@@ -136,12 +139,12 @@ public class TaskIO {
             try {
                 reader.close();
             } catch (IOException e) {
-                logger.error("Ошибка при заекрытии потока FileReader");
+                logger.error("Ошибка при закрытии потока " + e);
             }
-        } catch (FileNotFoundException e ) {
-            logger.error("Ошибка при считывании с файла в формате Gson (файл не найден или повреждён)");
+        } catch (FileNotFoundException e) {
+            logger.error("Ошибка при считывании с файла (файл не найден или повреждён)" + e);
         } catch (JsonSyntaxException | IllegalStateException e1) {
-            logger.error("Ошибка при считывании с файла в формате Gson (неверный формат записи)");
+            logger.error("Ошибка при считывании с файла (неверный формат записи)" + e1);
             System.out.println("Не удалось загрузить файлы");
             System.out.println("Неверный формат записи в файле с задачами");
         }

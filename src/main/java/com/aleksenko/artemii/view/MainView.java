@@ -53,7 +53,7 @@ public class MainView implements View {
                 menuVariant = reader.readLine();
             }
         } catch (IOException e) {
-            logger.error("Ошбика при считывание номера пункта меню" + e);
+            logger.error("Ошбика при считывание " + e);
         }
 
         return menuVariant;
@@ -73,7 +73,7 @@ public class MainView implements View {
                 variantOfTask = reader.readLine();
             }
         } catch (IOException e) {
-            logger.error("Ошбика при считывание подпункта меню (1)" + e);
+            logger.error("Ошбика при считывание " + e);
         }
         return variantOfTask;
     }
@@ -97,7 +97,7 @@ public class MainView implements View {
                 System.out.println("Что бы посмотреть календарь задач необходим определённый отрезок времени");
             }
         } catch (IOException e) {
-            logger.error("Ошбика при считывание подпункта меню (4)" + e);
+            logger.error("Ошбика при считывание " + e);
         }
 
         return menuVariant;
@@ -133,7 +133,6 @@ public class MainView implements View {
 
     @Override
     public LocalDateTime getTaskDate() {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         int thisYear = LocalDateTime.now().getYear();
         int year, month, day = 1, hour = 1, minute = 1;
         LocalDateTime taskDate;
@@ -143,12 +142,12 @@ public class MainView implements View {
                 System.out.println("Введите год: ");
                 year = Integer.parseInt(reader.readLine());
                 if (year < thisYear || year > 2100) {
-                    logger.warn("Пользыватель ввёл некоректный год - " + year);
+                    logger.warn("Некорректный ввод года - " + year);
                     throw new NumberFormatException();
                 }
                 break;
             } catch (IOException | NumberFormatException e1) {
-                logger.error("Пользыватель ввёл некоректные данные " + e1);
+                logger.error("Некорректный ввод " + e1);
                 System.out.println("Некорктный ввод!");
             }
         }
@@ -160,13 +159,13 @@ public class MainView implements View {
                 taskDate = LocalDateTime.of(year, month, day, hour, minute);
                 break;
             } catch (DateTimeException e1) {
-                logger.error("Пользыватель ввёл некоректную дату " + e1);
+                logger.error("Некорректный ввод " + e1);
                 System.out.println("Повторите ввод с доступным диапазоном месяцев (1 - 12)");
             } catch (NumberFormatException e2) {
-                logger.error("Пользыватель ввёл некоректные данные " + e2);
+                logger.error("Некорректный ввод " + e2);
                 System.out.println("Некорктный ввод!");
             } catch (IOException e3) {
-                logger.error("Ошибка при считывании месяца " + e3);
+                logger.error("Ошибка при считывании " + e3);
             }
         }
 
@@ -177,13 +176,13 @@ public class MainView implements View {
                 taskDate = LocalDateTime.of(year, month, day, hour, minute);
                 break;
             } catch (DateTimeException e1) {
-                logger.error("Пользыватель ввёл некоректную дату " + e1);
+                logger.error("Некорректный ввод " + e1);
                 System.out.println("Недопустимое количество дней в введёном месяце");
             } catch (NumberFormatException e2) {
-                logger.error("Пользыватель ввёл некоректные данные " + e2);
+                logger.error("Некорректный ввод " + e2);
                 System.out.println("Некорктный ввод!");
             } catch (IOException e3) {
-                logger.error("Ошибка при считывании дня месяца " + e3);
+                logger.error("Ошибка при считывании " + e3);
             }
         }
 
@@ -194,13 +193,13 @@ public class MainView implements View {
                 taskDate = LocalDateTime.of(year, month, day, hour, minute);
                 break;
             } catch (DateTimeException e1) {
-                logger.error("Пользыватель ввёл некоректную дату " + e1);
+                logger.error("Некорректный ввод " + e1);
                 System.out.println("Недопустимый час в сутках!");
             } catch (NumberFormatException e2) {
-                logger.error("Пользыватель ввёл некоректные данные " + e2);
+                logger.error("Некорректный ввод " + e2);
                 System.out.println("Некорктный ввод!");
             } catch (IOException e3) {
-                logger.error("Ошибка при считывании часа в сутках " + e3);
+                logger.error("Ошибка при считывании " + e3);
             }
         }
 
@@ -211,13 +210,13 @@ public class MainView implements View {
                 taskDate = LocalDateTime.of(year, month, day, hour, minute);
                 break;
             } catch (DateTimeException e1) {
-                logger.error("Пользыватель ввёл некоректную дату " + e1);
+                logger.error("Некорректный ввод " + e1);
                 System.out.println("Недопустимые минуты в часе!");
             } catch (NumberFormatException e2) {
-                logger.error("Пользыватель ввёл некоректные данные " + e2);
+                logger.error("Некорректный ввод " + e2);
                 System.out.println("Некорктный ввод!");
             } catch (IOException e3) {
-                logger.error("Ошибка при считывании минут в часе " + e3);
+                logger.error("Ошибка при считывани " + e3);
             }
         }
 
@@ -236,14 +235,14 @@ public class MainView implements View {
         try {
             return reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+           logger.error("Ощибка при считывании " + e);
         }
         return null;
     }
 
     @Override
     public int getNumberVariantOfTask() {
-        int variantOfTask = 0;
+        int variantOfTask;
         System.out.println("Выберете номер задачи для работы с ней");
         System.out.println("Введите '0' для выхода в меню");
         while (true) {
@@ -255,11 +254,11 @@ public class MainView implements View {
                     break;
                 }
             } catch (NumberFormatException e1) {
-                logger.error("Пользыватель ввёл некоректные данные " + variantOfTask);
+                logger.error("Некорректный ввод " + e1);
                 System.out.println("Недопустимый ввод \n" +
                         "Ввод: ");
             } catch (IOException e2) {
-                logger.error("Ошибка при считывании варианта номера задачи " + e2);
+                logger.error("Ошибка при считывании " + e2);
             }
         }
         return variantOfTask;
@@ -280,7 +279,7 @@ public class MainView implements View {
                 menuVariant = reader.readLine();
             }
         } catch (IOException e1) {
-            logger.error("Ошибка при считывании варианта удаления " + e1);
+            logger.error("Ошибка при считывании " + e1);
         }
 
         return menuVariant;
@@ -302,7 +301,7 @@ public class MainView implements View {
                 menuVariant = reader.readLine();
             }
         } catch (IOException e1) {
-            logger.error("Ошибка при считывании варинта начала работы с списками задач" + e1);
+            logger.error("Ошибка при считывании " + e1);
         }
         return menuVariant;
     }
@@ -325,7 +324,7 @@ public class MainView implements View {
                 }
             }
         } catch (IOException e1) {
-            logger.error("Ошибка при считывании варианта изменения");
+            logger.error("Ошибка при считывании " + e1);
         }
         return variantOfChange;
     }
@@ -352,7 +351,7 @@ public class MainView implements View {
                 System.out.println("Некорктный ввод! \n" +
                         "Введите формат повторения: ");
             } catch (IOException e2) {
-                logger.error("ОШибка при считывании интервала" + e2);
+                logger.error("ОШибка при считывании " + e2);
             }
         }
         return interval;
@@ -387,7 +386,7 @@ public class MainView implements View {
                 newActive = reader.readLine();
             }
         } catch (IOException e1) {
-            logger.error("Ошибка при считывании варианта активации");
+            logger.error("Ошибка при считывании " + e1);
         }
         return newActive;
     }
@@ -397,13 +396,13 @@ public class MainView implements View {
             reader.close();
             System.out.println("Удачного Вам дня!");
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии BufferedReader" + e);
+            logger.error("Ошибка при закрытии потока " + e);
         }
     }
 
-    public void printMessageToUser(String message) {
+   /*public void printMessageToUser(String message) {
         System.out.println(message);
-    }
+    }*/
 
     public void printSubMenuToRepeatedTaskCreating() {
         System.out.println("Для создания повторяющейся задачи необходимо ввести:\n" +

@@ -1,0 +1,2 @@
+{"capacity":0,"tasks":[null]}2020-02-14 00:23:11 [main] DEBUG com.aleksenko.artemii.controller.MainController  - Пользователь вызвал весь список задач. Количество выведеных задач = 0
+2020-02-14 00:23:14 [main] INFO  com.aleksenko.artemii.controller.MainController  - Завершение программы

@@ -1,1 +1,1 @@
-{"capacity":2,"tasks":[{"title":"Test repeated","interval":0,"isActive":true,"repeated":false,"time":{"date":{"year":2020,"month":3,"day":3},"time":{"hour":3,"minute":3,"second":0,"nano":0}}},{"title":"werrghfnh","interval":897,"isActive":false,"repeated":true,"start":{"date":{"year":2020,"month":3,"day":3},"time":{"hour":3,"minute":3,"second":0,"nano":0}},"end":{"date":{"year":2020,"month":4,"day":4},"time":{"hour":4,"minute":4,"second":0,"nano":0}}}]}
+{"capacity":0,"tasks":[null]}

@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.aleksenko.artemii.app.App
+Class-Path: log4j-1.2.17.jar gson-2.8.5.jar
+
