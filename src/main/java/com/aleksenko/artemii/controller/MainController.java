@@ -220,7 +220,7 @@ public class MainController implements Controller {
                 try {
                     view.getReader().readLine();
                 } catch (IOException e) {
-                    logger.error("Ошибка при потке задержать консоль" + e);
+                    logger.error("Ошибка при потке задержать консоль" , e);
                 }
                 System.exit(0);
                 break;
@@ -366,7 +366,8 @@ public class MainController implements Controller {
                 bw.write("{\"capacity\":0,\"tasks\":[null]}");
             }
         } catch (IOException e) {
-            logger.error("Ошибка записи в файл " + e);
+            System.out.println("Ошибка записи в файл ");
+            logger.error("Ошибка записи в файл " , e);
         } finally {
             try {
                 if (bw != null) {
@@ -374,7 +375,8 @@ public class MainController implements Controller {
                     bw.close();
                 }
             } catch (IOException e) {
-                logger.error("Ошибка при закрытии потока " + e);
+                System.out.println("Ошибка при закрытии потока ");
+                logger.error("Ошибка при закрытии потока " , e);
             }
         }
     }

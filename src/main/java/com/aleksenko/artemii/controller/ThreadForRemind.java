@@ -32,7 +32,7 @@ public class ThreadForRemind extends Thread {
             try {
                 sleep(20000);
             } catch (InterruptedException e) {
-                logger.error("Ошибка приостановления потока" + e);
+                logger.error("Ошибка приостановления потока" , e);
             }
         }
     }

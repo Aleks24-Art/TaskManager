@@ -1,2 +1,52 @@
-{"capacity":0,"tasks":[null]}2020-02-14 00:23:11 [main] DEBUG com.aleksenko.artemii.controller.MainController  - Пользователь вызвал весь список задач. Количество выведеных задач = 0
-2020-02-14 00:23:14 [main] INFO  com.aleksenko.artemii.controller.MainController  - Завершение программы
+{"capacity":0,"tasks":[null]}2020-02-14 16:49:54 [main] ERROR com.aleksenko.artemii.view.MainView  - Некорректный ввод 
+java.lang.NumberFormatException: For input string: "акп"
+	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.lang.Integer.parseInt(Integer.java:580)
+	at java.lang.Integer.parseInt(Integer.java:615)
+	at com.aleksenko.artemii.view.MainView.getTaskDate(MainView.java:146)
+	at com.aleksenko.artemii.controller.MainController.addStart(MainController.java:245)
+	at com.aleksenko.artemii.controller.MainController.addTask(MainController.java:89)
+	at com.aleksenko.artemii.controller.MainController.startWork(MainController.java:48)
+	at com.aleksenko.artemii.controller.MainController.<init>(MainController.java:39)
+	at com.aleksenko.artemii.app.App.main(App.java:19)
+2020-02-14 16:49:55 [main] WARN  com.aleksenko.artemii.view.MainView  - Некорректный ввод года - 4
+2020-02-14 16:49:55 [main] ERROR com.aleksenko.artemii.view.MainView  - Некорректный ввод 
+java.lang.NumberFormatException
+	at com.aleksenko.artemii.view.MainView.getTaskDate(MainView.java:149)
+	at com.aleksenko.artemii.controller.MainController.addStart(MainController.java:245)
+	at com.aleksenko.artemii.controller.MainController.addTask(MainController.java:89)
+	at com.aleksenko.artemii.controller.MainController.startWork(MainController.java:48)
+	at com.aleksenko.artemii.controller.MainController.<init>(MainController.java:39)
+	at com.aleksenko.artemii.app.App.main(App.java:19)
+2020-02-14 16:49:56 [main] WARN  com.aleksenko.artemii.view.MainView  - Некорректный ввод года - -8
+2020-02-14 16:49:56 [main] ERROR com.aleksenko.artemii.view.MainView  - Некорректный ввод 
+java.lang.NumberFormatException
+	at com.aleksenko.artemii.view.MainView.getTaskDate(MainView.java:149)
+	at com.aleksenko.artemii.controller.MainController.addStart(MainController.java:245)
+	at com.aleksenko.artemii.controller.MainController.addTask(MainController.java:89)
+	at com.aleksenko.artemii.controller.MainController.startWork(MainController.java:48)
+	at com.aleksenko.artemii.controller.MainController.<init>(MainController.java:39)
+	at com.aleksenko.artemii.app.App.main(App.java:19)
+2020-02-14 16:50:02 [main] WARN  com.aleksenko.artemii.view.MainView  - Некорректный ввод года - 12
+2020-02-14 16:50:02 [main] ERROR com.aleksenko.artemii.view.MainView  - Некорректный ввод 
+java.lang.NumberFormatException
+	at com.aleksenko.artemii.view.MainView.getTaskDate(MainView.java:149)
+	at com.aleksenko.artemii.controller.MainController.addEnd(MainController.java:251)
+	at com.aleksenko.artemii.controller.MainController.addTask(MainController.java:90)
+	at com.aleksenko.artemii.controller.MainController.startWork(MainController.java:48)
+	at com.aleksenko.artemii.controller.MainController.<init>(MainController.java:39)
+	at com.aleksenko.artemii.app.App.main(App.java:19)
+2020-02-14 16:50:06 [main] ERROR com.aleksenko.artemii.view.MainView  - Некорректный ввод 
+java.time.DateTimeException: Invalid value for DayOfMonth (valid values 1 - 28/31): 50
+	at java.time.temporal.ValueRange.checkValidValue(ValueRange.java:311)
+	at java.time.temporal.ChronoField.checkValidValue(ChronoField.java:703)
+	at java.time.LocalDate.of(LocalDate.java:268)
+	at java.time.LocalDateTime.of(LocalDateTime.java:311)
+	at com.aleksenko.artemii.view.MainView.getTaskDate(MainView.java:180)
+	at com.aleksenko.artemii.controller.MainController.addEnd(MainController.java:251)
+	at com.aleksenko.artemii.controller.MainController.addTask(MainController.java:90)
+	at com.aleksenko.artemii.controller.MainController.startWork(MainController.java:48)
+	at com.aleksenko.artemii.controller.MainController.<init>(MainController.java:39)
+	at com.aleksenko.artemii.app.App.main(App.java:19)
+2020-02-14 16:50:16 [main] INFO  com.aleksenko.artemii.controller.MainController  - Добавлена задача с повторениемапа
+2020-02-14 16:50:18 [main] INFO  com.aleksenko.artemii.controller.MainController  - Завершение программы

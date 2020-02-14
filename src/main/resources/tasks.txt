@@ -1,1 +1,1 @@
-{"capacity":0,"tasks":[null]}
+{"capacity":1,"tasks":[{"title":"апа","interval":500,"isActive":true,"repeated":true,"start":{"date":{"year":2020,"month":12,"day":12},"time":{"hour":12,"minute":12,"second":0,"nano":0}},"end":{"date":{"year":2020,"month":12,"day":20},"time":{"hour":20,"minute":20,"second":0,"nano":0}}}]}

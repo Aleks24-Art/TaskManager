@@ -16,7 +16,8 @@ public class TaskIO {
         try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
             oos.writeObject(tasks);
         } catch (IOException e1) {
-            logger.error("Ошибка при считывании" + e1);
+            System.out.println("Ошбика при считывании ");
+            logger.error("Ошибка при считывании" , e1);
         }
 
     }
@@ -28,7 +29,8 @@ public class TaskIO {
                 tasks.add(task);
             }
         } catch (IOException | ClassNotFoundException e1) {
-            logger.error("Ошибка при считывании " + e1);
+            System.out.println("Ошбика при считывании ");
+            logger.error("Ошибка при считывании " , e1);
         }
     }
 
@@ -37,14 +39,16 @@ public class TaskIO {
         try {
             ous = new ObjectOutputStream(new FileOutputStream(file));
         } catch (IOException e) {
-            logger.error("Ошибка при заиси в файл" + e);
+            System.out.println("Ошбика при записи в файл ");
+            logger.error("Ошибка при заиси в файл" , e);
         }
         try {
             if (ous != null) {
                 ous.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока " + e);
+            System.out.println("Ошбика при закрытии потока ");
+            logger.error("Ошибка при закрытии потока " , e);
         }
     }
 
@@ -53,14 +57,16 @@ public class TaskIO {
         try {
             ois = new ObjectInputStream(new FileInputStream(file));
         } catch (IOException e) {
-            logger.error("Ошибка при считывании " + e);
+            System.out.println("Ошбика при считывании ");
+            logger.error("Ошибка при считывании " , e);
         }
         try {
             if (ois != null) {
                 ois.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока " + e);
+            System.out.println("Ошибка при закрытии потока " );
+            logger.error("Ошибка при закрытии потока " , e);
         }
     }
 
@@ -70,12 +76,14 @@ public class TaskIO {
         try {
             out.write(gson.toJson(arrayTaskList, ArrayTaskList.class));
         } catch (IOException e) {
-            logger.error("Ошибка при записи в поток" + e);
+            System.out.println("Ошибка при записи в поток " );
+            logger.error("Ошибка при записи в поток" , e);
         }
         try {
             out.close();
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока " + e);
+            System.out.println("Ошибка при закрытии потока " );
+            logger.error("Ошибка при закрытии потока " , e);
         }
     }
 
@@ -88,7 +96,8 @@ public class TaskIO {
         try {
             in.close();
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока " + e);
+            System.out.println("Ошибка при закрытии потока " );
+            logger.error("Ошибка при закрытии потока " , e);
         }
     }
 
@@ -108,7 +117,8 @@ public class TaskIO {
             writer.flush();
             writer.close();
         } catch (IOException e1) {
-            logger.error("Ошибка при записи в файл " + e1);
+            System.out.println("Ошибка при записи в файл " );
+            logger.error("Ошибка при записи в файл " , e1);
         }
 
         try {
@@ -116,7 +126,8 @@ public class TaskIO {
                 writer.close();
             }
         } catch (IOException e) {
-            logger.error("Ошибка при закрытии потока " + e);
+            System.out.println("Ошибка при закрытии потока " );
+            logger.error("Ошибка при закрытии потока " , e);
         }
     }
 
@@ -139,12 +150,13 @@ public class TaskIO {
             try {
                 reader.close();
             } catch (IOException e) {
-                logger.error("Ошибка при закрытии потока " + e);
+                System.out.println("Ошибка при закрытии потока " );
+                logger.error("Ошибка при закрытии потока " , e);
             }
         } catch (FileNotFoundException e) {
-            logger.error("Ошибка при считывании с файла (файл не найден или повреждён)" + e);
+            logger.error("Ошибка при считывании с файла (файл не найден или повреждён)" , e);
         } catch (JsonSyntaxException | IllegalStateException e1) {
-            logger.error("Ошибка при считывании с файла (неверный формат записи)" + e1);
+            logger.error("Ошибка при считывании с файла (неверный формат записи)" , e1);
             System.out.println("Не удалось загрузить файлы");
             System.out.println("Неверный формат записи в файле с задачами");
         }
